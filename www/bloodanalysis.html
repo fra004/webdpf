@@ -1,0 +1,49 @@
+﻿<ons-page ng-controller="BloodAnalysisController">
+    <div ng-include="'top.html'"></div>
+    <div ng-include="'patientInfo.html'"></div>
+    <br />
+    <ons-list>
+        <ons-list-header>Bestilling</ons-list-header>
+        <ons-list-item>
+            Blodtyping
+            <ons-switch ng-model="patient.bloodTestRequired" modifier="list-item" id="bloodtyping"></ons-switch>
+        </ons-list-item>
+        <ons-list-item>
+            Pretransfusjonsundersøkelse
+            <ons-switch modifier="list-item" checked></ons-switch>
+        </ons-list-item>
+    </ons-list>
+    <div id="ButtonRow" style=" vertical-align: bottom; float: none; position:absolute;  width:100% ;bottom:0;">
+        <ons-row>
+            <button class="button button--large bloodbutton" ng-click="orderSelectedTests()">
+                <ons-row>
+                    <ons-col>
+                        Send bestilling
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <ons-row>
+            <button class="button button--large bloodbutton" ng-click="cancelTestOrder();">
+                <ons-row>
+                    <ons-col>
+                        Avbryt bestilling
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <div ng-include="'bottom.html'"></div>
+    </div> <!--ButtonRow End-->
+</ons-page>

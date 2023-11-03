@@ -1,0 +1,115 @@
+﻿<ons-page ng-controller="TransfusionController">
+    <div ng-include="'top.html'"></div>
+    <div ng-include="'patientInfo.html'"></div>
+    <ons-row>
+        <div class="center-page" ng-show="!bloodbag.part1 || !bloodbag.part2">
+            <h1 class="center-text">Klar til å scanne</h1>
+        </div>
+        <div class="center-page" id="checkbloodproduct" style="height:60%" tabindex="0">
+            <ons-list>
+                <ons-list-header class="center-text"><strong>Blodprodukt <span ng-show="product.type">-</span>{{product.type}}</strong></ons-list-header>
+                <ons-list-item>
+                    <ons-row>
+                        <ons-col width="5%"></ons-col>
+                        <ons-col  width="30%">
+                            <img src="images/bloodbag.jpg" height="120" />
+                        </ons-col>
+                        <ons-col  width="60%">
+                            <ons-row>
+                                <label for="part1">Del 1 (Tappenummer):</label> <input id="part1" type="text" ng-class="{'red-border':root.state===7}" ng-model="bloodbag.part1" style="width:100%;" readonly/>
+                            </ons-row>
+                            <ons-row>
+                                <label for="part2">Del 2 (Produktkode):</label> <input id="part2" type="text" ng-class="{'red-border':root.state===8}" ng-model="bloodbag.part2" style="width:100%;" readonly/>
+                            </ons-row>
+                        </ons-col>
+                        <ons-col width="5%"></ons-col>
+                    </ons-row>
+
+                </ons-list-item>
+            </ons-list>
+
+            <ons-list ng-show="product">                
+                <ons-list-item ng-show="product.reservertPasient === patient.Fnr">
+                    <ons-row>
+                        <ons-col width="80%">                         
+                            <p>Blodenheten er reservert til denne pasienten.</p>
+                            <p>Reservasjonstiden er ikke passert ({{product.reservertDato}}).</p>
+                        </ons-col>
+                        <ons-col class="center-text drop-text">
+                            <i class="fa fa-check-circle fa-5x green-text"></i>
+                        </ons-col>
+                    </ons-row>
+                    <ons-row ng-show="product.transDato">
+                        <ons-col width="80%">
+                            <p>Transfusjonen pågår ({{product.transDato}}).</p>
+                            <div ng-show="!product.preDok || !product.postDok"><p>Dokumentasjon mangler</p></div>
+                        </ons-col>
+                    </ons-row>
+                                    </ons-list-item>
+                <ons-list-item ng-show="product.reservertPasient !== patient.Fnr">
+                    <ons-row>
+                        <ons-col width="80%">
+                            <p>NB! Blodenheten passer ikke for aktiv pasient.</p>
+                            <p>Scann ny pasient eller rett pose før transfusjonen kan fortsette.</p>
+                        </ons-col>
+                        <ons-col class="center-text drop-text">
+                            <i class="fa fa-exclamation-triangle fa-5x red-text"></i>
+                        </ons-col>
+                    </ons-row>
+                </ons-list-item>
+            </ons-list>
+        </div>
+    </ons-row>
+
+    <div id="ButtonRow" style=" vertical-align: bottom; float: none; position:absolute;  width:100% ;bottom:0;">
+        <ons-row ng-show="bloodbag.part1 && bloodbag.part2 && product.reservertPasient === patient.Fnr">
+          
+                <button class="button button--large  bloodbutton" ng-click="navi.pushPage('TransDok.html');">
+                    <ons-row>
+                        <ons-col>
+                            Dokumenter tilstand og start.
+                        </ons-col>
+                        <ons-col width="60px">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                                <i class="fa fa-heartbeat  fa-stack-1x"></i>
+                            </span>
+                        </ons-col>
+                    </ons-row>
+                </button>
+          
+        </ons-row>
+
+        <ons-row>
+            <button class="button button--large button bloodbutton" ng-click="exitTrans();">
+                <ons-row>
+                    <ons-col>
+                        Avslutt
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <ons-row>
+            <button class="button button--large button--light" ng-click="ons.notification.alert({ message: 'Side for å bestille traumepakke'});">
+                <ons-row>
+                    <ons-col>
+                        Bestill Traumepakke
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <div ng-include="'bottom.html'"></div>
+    </div> <!--ButtonRow End-->
+</ons-page>

@@ -1,0 +1,19 @@
+﻿<ons-row ng-class="{'green-text':(state === 2)}" style="margin-top: 5px;">
+    <ons-col>
+        <div style="text-align: center; line-height: 44px" ng-show="root.state === 0">
+            Ikke pålogget
+        </div>
+        <div style="text-align: center; line-height: 44px" ng-show="root.state === 1">
+            Logger på {{nurse.fullName}}
+            <ons-icon icon="ion-load-c" spin="true" fixed-width="true" style="color: #000;"></ons-icon>
+        </div>
+        <div style="text-align: center; line-height: 44px" ng-show="root.state >= 2">
+            <strong>{{nurse.fullName}}</strong>
+        </div>
+    </ons-col>
+    <ons-col width="90px">
+        <button class="button button--large--quiet" ng-disabled="root.state === 0" ng-click="logout()">
+            <i class="fa fa-lg fa-2x ion-log-out"></i>
+        </button>
+    </ons-col>
+</ons-row>

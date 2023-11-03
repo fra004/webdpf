@@ -1,0 +1,286 @@
+﻿
+<ons-page ng-controller="TransDokController">
+    <div ng-include="'top.html'"></div>
+    <ons-row>
+        <ons-col>
+            <h3 class="center-text">{{patient.Fornavn}} {{patient.Etternavn}}</h3>
+        </ons-col>
+
+    </ons-row>
+    <ons-row style="background-color:#BBBBBB">
+        <ons-col>{{patient.kjonn}}</ons-col>
+        <ons-col class="center-text">{{patient.alder}}</ons-col>
+        <ons-col class="right-text">{{patient.Fnr}}</ons-col>
+    </ons-row>
+    <br />
+    <div class="center" style="height:90%;">
+
+        <ons-list style=" width:100% ; text-align: center;">
+            <ons-list-header>Tilstand</ons-list-header>
+            <ons-list-item >
+                <ons-row>
+                    <ons-col>
+                        <strong>dato</strong>
+                    </ons-col>
+                    <ons-col>
+                        <strong>tidspunkt</strong>
+                    </ons-col>
+                    <ons-col>
+                        <strong>temperatur</strong>
+                    </ons-col>
+                    <ons-col>
+                        <strong>blodtrykk</strong>
+                    </ons-col>
+                    <ons-col>
+                        <strong>puls</strong>
+                    </ons-col>
+                </ons-row>
+            </ons-list-item>
+            <ons-list-item ng-repeat="dok in transDok | orderBy:['dato']" modifier="tappable" ng-show="!isTilstandFormOpen">
+                <ons-row>
+                    <ons-col>
+                        {{dok.dato | date:'dd.MM.yyyy'}}
+                    </ons-col>
+                    <ons-col>
+                        {{dok.dato | date:'HH:mm:ss'}}
+                    </ons-col>
+                    <ons-col>
+                        {{dok.temperatur}}
+                    </ons-col>
+                    <ons-col>
+                        {{dok.systoliskBt}}/{{dok.diastoliskBt}}
+                    </ons-col>
+                    <ons-col>
+                        {{dok.puls}}
+                    </ons-col>
+                </ons-row>
+            </ons-list-item>
+            <ons-list-item ng-show="isTilstandFormOpen">
+                <ons-row>
+                    <ons-col>
+                        <input type="text" class="text-input" ng-model="newValue.dato" at-Date-Input>
+                    </ons-col>
+                    <ons-col>
+                        <input type="text" class="text-input" ng-model="newValue.dato" at-Time-Input>
+                    </ons-col>
+                    <ons-col>
+                        <input type="number" step="0.01" class="text-input" ng-model="newValue.temperatur" >
+                    </ons-col>
+                    <ons-col>
+                        <div class="fieldwrapper">
+                            <input type="number" step="0.01" class="text-input" ng-model="newValue.systoliskBt" style="width:48%">
+                            <strong>/</strong>
+                            <input type="number" step="0.01" class="text-input" ng-model="newValue.diastoliskBt" style="width:48%">
+                        </div>
+                    </ons-col>
+                    <ons-col>
+                        <input type="number" step="0.01" class="text-input" ng-model="newValue.puls" >
+                    </ons-col>
+                </ons-row>
+                <ons-row>
+                    <ons-col>
+                        <select ng-change="TransDokValgt()" ng-model="valgtTrans" ng-options="value.id1 +','+ value.id2 as value.id1 + ' ' +value.id2 +' ('+ value.type +')' + ', Transfundert: '+ value.transDato for value in patient.waitingProducts">
+                            <option value="">-- Koble til Blodprodukt --</option>
+                        </select>
+                    </ons-col>
+                </ons-row>
+                <ons-row>
+                    <ons-col width="30%">Temperatur: </ons-col> <ons-col width="60%"><input type="range" class="range drop-text" ng-model="newValue.temperatur" min=20 max=50 value="37"/></ons-col><ons-col  width="10%">{{newValue.temperatur}}</ons-col>
+                </ons-row>
+                <ons-row>
+                    <ons-col width="30%">Systolisk bt: </ons-col> <ons-col width="60%"><input type="range" class="range drop-text" ng-model="newValue.systoliskBt" min=90 max=160 value="120"/></ons-col><ons-col width="10%">{{newValue.systoliskBt}}</ons-col>
+                </ons-row>
+                <ons-row>
+                    <ons-col width="30%">Diastolisk bt: </ons-col> <ons-col width="60%"><input type="range" class="range drop-text" ng-model="newValue.diastoliskBt" min=40 max=150 value="80" /></ons-col><ons-col width="10%">{{newValue.diastoliskBt}}</ons-col>
+                </ons-row>
+                <ons-row>
+                    <ons-col width="30%">puls: </ons-col> <ons-col width="60%"><input type="range" class="range drop-text" ng-model="newValue.puls" min=60 max=200 value="120"/></ons-col><ons-col width="10%">{{newValue.puls}}</ons-col>
+                </ons-row>
+            </ons-list-item>
+            <ons-list-item>
+                <ons-col>
+                    <button ng-hide="isTilstandFormOpen" class="button button--small  move-right" ng-click="activateMeasureTask();isTilstandFormOpen = !isTilstandFormOpen;">
+                        <ons-row>
+                            <ons-col width="60px">
+                                <span class="fa-stack">
+                                    <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                                    <i class="fa fa-plus fa-stack-1x"></i>
+                                </span>
+                            </ons-col>
+                        </ons-row>
+                    </button>
+                    <div class="fieldwrapper   move-right" ng-show="isTilstandFormOpen">
+                        <button class="button button--small" ng-click="deactivateMeasureTask();isTilstandFormOpen = !isTilstandFormOpen;">
+                            <ons-row>
+                                <ons-col width="60px">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                                        <i class="fa fa-times fa-stack-1x"></i>
+                                    </span>
+                                </ons-col>
+                            </ons-row>
+                        </button>
+                        <button class="button button--small" ng-click="deactivateMeasureTask();pushNewValues();isTilstandFormOpen = !isTilstandFormOpen;">
+                            <ons-row>
+                                <ons-col width="60px">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                                        <i class="fa fa-check fa-stack-1x"></i>
+                                    </span>
+                                </ons-col>
+                            </ons-row>
+                        </button>
+                    </div>
+                </ons-col>
+            </ons-list-item>
+
+            <ons-list-header ng-show="!isTilstandFormOpen">Transfusjonsreaksjoner</ons-list-header>
+            <ons-list-item ng-show="!isTilstandFormOpen">
+                <ons-row>
+                    <ons-col>
+                        <strong>dato</strong>
+                    </ons-col>
+                    <ons-col>
+                        <strong>tidspunkt</strong>
+                    </ons-col>
+                    <ons-col>
+                        <strong>blodprodukt</strong>
+                    </ons-col>
+                    <ons-col>
+                        <strong>reaksjon</strong>
+                    </ons-col>
+                </ons-row>
+            </ons-list-item>
+            <ons-list-item ng-repeat="reakt in patTransReakt | orderBy:['dato']" modifier="tappable" ng-show="!isTilstandFormOpen">
+                <ons-row>
+                    <ons-col>
+                        {{reakt.dato | date:'dd.MM.yyyy'}}
+                    </ons-col>
+                    <ons-col>
+                        {{reakt.dato | date:'HH:mm:ss'}}
+                    </ons-col>
+                    <ons-col>
+                        {{reakt.produkt1}} {{reakt.produkt2}}
+                    </ons-col>
+                    <ons-col>
+                        {{reakt.reaksjon}}
+                    </ons-col>
+                </ons-row>
+            </ons-list-item>
+            <ons-list-item ng-show="isReaksjonFormOpen">
+                <ons-row>
+
+                    <ons-col>
+                        <select ng-change="TransReaktProdValgt()" ng-model="valgtReaktProd" ng-options="value.id1 +','+ value.id2 as value.id1 + ' ' +value.id2 +' ('+ value.type +')' + ', Transfundert: '+ value.transDato for value in patient.waitingProducts">
+                            <option value="">-- Blodprodukt --</option>
+                        </select>
+                    </ons-col>
+                </ons-row>
+                <ons-row>
+                    <ons-col>
+                        <select ng-change="TransReaktValgt()" ng-model="valgtReakt" ng-options="reak.value  as reak.value for reak in transReakt">
+                            <option value="">-- Reaksjon --</option>
+                        </select>
+                    </ons-col>
+                </ons-row>
+            </ons-list-item>
+            <ons-list-item ng-show="!isTilstandFormOpen">
+                <ons-col>
+                    <button ng-hide="isReaksjonFormOpen" class="button button--small  move-right" ng-click="isReaksjonFormOpen = !isReaksjonFormOpen;">
+                        <ons-row>
+                            <ons-col width="60px">
+                                <span class="fa-stack">
+                                    <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                                    <i class="fa fa-plus fa-stack-1x"></i>
+                                </span>
+                            </ons-col>
+                        </ons-row>
+                    </button>
+
+                    <div class="fieldwrapper    move-right" ng-show="isReaksjonFormOpen">
+                        <button class="button button--small" ng-click="clearReakt(); isReaksjonFormOpen = !isReaksjonFormOpen;">
+                            <ons-row>
+                                <ons-col width="60px">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                                        <i class="fa fa-times fa-stack-1x"></i>
+                                    </span>
+                                </ons-col>
+                            </ons-row>
+                        </button>
+                        <button class="button button--small" ng-click="pushNewReaktValues();isReaksjonFormOpen = !isReaksjonFormOpen;">
+                            <ons-row>
+                                <ons-col width="60px">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                                        <i class="fa fa-check fa-stack-1x"></i>
+                                    </span>
+                                </ons-col>
+                            </ons-row>
+                        </button>
+                    </div>
+                </ons-col>
+            </ons-list-item>
+
+        </ons-list>
+    </div>
+    <br />
+
+    <div id="ButtonRow" style=" vertical-align: bottom; float: none; position:absolute;  width:100% ;bottom:0;">
+
+
+        <ons-row ng-show="bloodbag.part1.length >0 && bloodbag.part2.length >0 &&  product.reservertPasient === patient.Fnr">
+            <button class="button button--large bloodbutton" ng-click="startTrans();">
+                <ons-row>
+                    <ons-col>
+                        Start
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-play fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <ons-row>
+            <ons-col>
+                <button ng-show="moreBag()" class="button button--large bloodbutton" ng-click="goToNextRound()">
+                    <ons-row>
+                        <ons-col>
+                            Next
+                        </ons-col>
+                        <ons-col width="60px">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                                <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                            </span>
+                        </ons-col>
+                    </ons-row>
+                </button>
+            </ons-col>
+
+        </ons-row>
+        <ons-row>
+            <ons-col>
+                <button class="button button--large bloodbutton" ng-click="performAvslutt();">
+                    <ons-row>
+                        <ons-col>
+                            Avslutt
+                        </ons-col>
+                        <ons-col width="60px">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                                <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                            </span>
+                        </ons-col>
+                    </ons-row>
+                </button>
+            </ons-col>
+
+        </ons-row>
+        <div ng-include="'bottom.html'"></div>
+    </div> <!--ButtonRow End-->
+
+</ons-page>

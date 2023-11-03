@@ -1,0 +1,29 @@
+﻿<ons-row>
+    <ons-col>
+        <h3 class="center-text">{{patient.Fornavn}} {{patient.Etternavn}}</h3>
+    </ons-col>
+</ons-row>
+<ons-row style="background-color:#BBBBBB">
+    <ons-col>{{patient.kjonn}}</ons-col>
+    <ons-col class="center-text">{{patient.alder}}</ons-col>
+    <ons-col class="right-text">{{patient.Fnr}}</ons-col>
+</ons-row>
+<ons-row>
+    <ons-col>
+        Blodtyping
+        <br />
+        <strong ng-class="patient.bloodInfo.validType ? 'green-text' : 'red-text'">{{patient.bloodInfo.type}}</strong>
+        <br />
+        <span ng-class="patient.bloodInfo.validPre ? 'green-text' : 'red-text'">{{patient.bloodInfo.typeTime}}</span>
+    </ons-col>
+    <ons-col>
+        Preundersøkelse
+        <br />
+        <strong ng-class="patient.bloodInfo.validPre ? 'green-text' : 'red-text'">{{patient.bloodInfo.pre}}</strong>
+        <br />
+        <br />
+        <span ng-show="patient.bloodInfo.comment">Melding fra blodbanken</span>
+        <br />
+        {{patient.bloodInfo.comment}}
+    </ons-col>
+</ons-row>

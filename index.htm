@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" type="text/css" href="dpf.css">
+    <link rel="stylesheet" type="text/css" href="collapse.css">
+    <title>DPF Editor</title>
+</head>
+
+<body>
+
+<script src="jquery-1.11.2.min.js"></script>
+<script src="jquery.collapsible.js"></script>
+<script type="text/javascript" src="raphael.js"></script>
+<script type="text/javascript" src="FileUtil.js"></script>
+<script type="text/javascript" src="MetamodelStack.js"></script>
+<script type="text/javascript" src="dpf.js"></script>
+
+<script type="text/javascript" src="Specification.js"></script>
+<script type="text/javascript" src="dragDpfNode.js"></script>
+<script type="text/javascript" src="dragDpfConnection.js"></script>
+<script type="text/javascript" src="dragDpfText.js"></script>
+<script type="text/javascript" src="dragDpfPredText.js"></script>
+
+<script type="text/javascript" src="DpfNode.js"></script>
+<script type="text/javascript" src="DpfConnection.js"></script>
+<script type="text/javascript" src="DpfTyping.js"></script>
+<script type="text/javascript" src="DpfPredicate.js"></script>
+<script type="text/javascript" src="DpfCompletionRule.js"></script>
+<script type="text/javascript" src="DpfAnnotation.js"></script>
+<script type="text/javascript" src="DpfPredicateConstraint.js"></script>
+
+<script type="text/javascript" src="seperator.js"></script>
+<script type="text/javascript" src="pane_General.js"></script>
+<script type="text/javascript" src="pane_Model.js"></script>
+<script type="text/javascript" src="pane_Predicate.js"></script>
+<script type="text/javascript" src="pane_CompletionRule.js"></script>
+<script type="text/javascript" src="pane_ProductionRule.js"></script>
+
+<script type="text/javascript" src="DPOTransformation_NC_step.js" ></script>
+<script type="text/javascript" src="DPOTransformation_NC.js"></script>
+<script type="text/javascript" src="TerminationAnalysis.js"></script>
+<script type="text/javascript" src="pane_QueryView.js"></script>
+<script type="text/javascript" src="CriticalPairAnalysis.js"></script>
+
+<script type="text/javascript" src="BloodAppSimulation.js"></script>
+
+
+
+<div class="containDiv">
+    <div id="first" class="collapse-container">
+        <h3><span class="arrow-r"></span>File</h3>
+        <div class="settingsPane"  style="background-color: lightgray">
+            <p>Add a model into the meta-model stack:
+            <table>
+                <tr>
+                    <td>Model Name:</td>
+                    <td><textarea id="F_modelName"  style="color:#444444;" rows="1" cols="20" ></textarea></td>
+                </tr>
+                <tr>
+                    <td></td><td>
+                    <img  src="images/enter2.png" id="F_Add" height="25" width="25" onclick="buildNewModel()" >
+                    <img  src="images/pencil.png" id="F_Edit" height="25" width="25" onclick="editModelName()" >
+                    <!--img  src="images/remove.png" id="F_Refresh" height="25" width="25" onclick="" -->
+                </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr><td><b>Metamodel stack:</b></td>
+                    <td>
+                        <img  src="images/document_save.png" id="F_Save" height="25" width="25" onclick="writeModelIntoFile()" title="Save models">
+                    </td><td>
+                        <img  src="images/folder_open.png" id="F_Open" height="25" width="25" onclick="openFileOption()" title="Open a WebDPF file">
+                    </td>
+                </tr>
+            </table>
+
+            <input type="file" id="files" name="afile"  style="opacity: 0"/>
+            <output id="list"></output>
+
+            <div class="note-box">
+                <div style="height: 155px;" class="white">
+                    <span id="metamodels"></span>
+                </div>
+            </div>
+            <p>
+            <div class="error-box-p" style="color: #FF3F21;" >
+                <span id="F_error"></span>
+            </div>
+
+            <p>
+            <div class="message-box-p" style="color: #2121FF;" >
+                <span id="F_message"></span>
+            </div>
+
+            <p>
+            <table>
+                <tr>
+                    <td><b>Perform Termination Analysis:</b></td>
+                    <td>
+                        <img  src="images/finish.png" id="F_Terminate" height="35" width="35" onclick="checkTermination(0)" title="Check completion rules">
+                    </td>
+                    <td><img  src="images/finish.png" id="F_Terminate2" height="35" width="35" onclick="checkTermination(1)" title="Check production rules"></td>
+                </tr>
+                <tr>
+                    <td><b>Perform Transformation:</b></td>
+                    <td></td><td></td>
+                </tr>
+                <tr>
+                    <td><b>Completion rules</b></td>
+                    <td><img  src="images/auto.png" id="F_Transform" height="35" width="35" onclick="transformDPO_NC(0)" title="Continuously"></td>
+                    <td><img  src="images/step.png" id="F_Step_Transform" height="35" width="35" onclick="transformDPO_NC_step(0)" title="Step by step"></td>
+                </tr>
+                <tr>
+                    <td><b>Production rules</b></td>
+                    <td><img  src="images/auto.png" id="F_Transform2" height="35" width="35" onclick="transformDPO_NC(1)" title="All at once"></td>
+                    <td><img  src="images/step.png" id="F_Step_Transform2" height="35" width="35" onclick="transformDPO_NC_step(1)" title="Step by step"></td>
+                </tr>
+                <tr>
+                    <td><b>Conformance check: </b></td>
+                    <td><img  src="images/success.png" id="F_Conformance" height="35" width="35" onclick="conformanceCheck()" ></td>
+                    <td><img  src="images/iSync.png" id="F_InconsistencyRefresh" height="25" width="25" onclick="refreshInconsistencyInfo()" title="Clear error marks"></td>
+                </tr>
+            </table>
+
+            <p>
+            <table>
+                <tr>
+                    <td><input type="checkbox" id="simulate" checked="checked"  onClick="turnOnSimulation()">Turn on/off Simulation</td>
+                    <td><img  src="images/step.png" id="TaskSimulation" height="35" width="35" onclick="simulateTaskExecution()" title="Execute Task"></td>
+                </tr>
+            </table>
+
+
+            <b>Transformation Results:</b><br>
+            <div class="note-box">
+                <div style="height: 200px;" class="white">
+                    <span id="targetModels"></span>
+                </div>
+            </div>
+
+            <p>
+            <b>Critical Pair Discovery:</b><img  src="images/left_right.png" id="critPairAnalysis" height="25" width="25" onclick="checkCriticalPair()" ><br>
+            <div class="note-box">
+                <div style="height: 200px;" class="white">
+                    <span id="criticalpairs"></span>
+                </div>
+            </div>
+
+
+
+        </div>
+        <h3><span class="arrow-r"></span>Signature</h3>
+        <div class="settingsPane" style="background-color: lightgray" >
+            <p>
+            <table><tr><td><b> Build New Predicate:</b></td><td><img  src="images/sigma.png" height="35" width="35" onclick="prepareBuildingNewPredicate()" ></td></tr></table>
+            <br>
+            <table>
+                <tr>
+                    <td>Predicate Name:</td>
+                    <td><textarea id="P_predName"  style="color:#444444;" rows="1" cols="17" onblur="updatePredicateName()"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Parameters:</td>
+                    <td><textarea id="P_parameters"  style="color:#444444;" rows="1" cols="17" onblur="updatePredicateParameterText()" ></textarea></td>
+                </tr>
+                <tr>
+                    <td>Display Name:</td>
+                    <td><textarea id="P_disp"  style="color:#444444;" rows="1" cols="17" onblur="updatePredicateDisplayName()"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Node Name:</td><td><textarea id="P_nodeName" style="color:#444444;"  rows="1" cols="17"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td><td>
+                    <img  src="images/enter2.png" id="P_Add" height="25" width="25" onclick="addNewArityNode()" >
+                    <img  src="images/pencil.png" id="P_Edit" height="25" width="25" onclick="PeditNode()" >
+                    <img  src="images/remove.png" id="P_Delete" height="25" width="25" onclick="P_removeDpfNode()" >
+                    <img  src="images/iSync.png" id="P_Refresh" height="25" width="25" onclick="refreshFields_PRefresh()" >
+                </td>
+                </tr>
+            </table>
+
+            <p>
+            <table>
+                <tr>
+                    <td>Source Node:</td><td><textarea id="P_srcNode" readonly style="color:#444444;"  rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Target Node:</td><td><textarea id="P_trgNode" readonly style="color:#444444;"  rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Edge Name:</td><td><textarea id="P_edgeName"  rows="1" style="color:#444444;"  cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td><td>
+                    <img  src="images/enter2.png" id="P_EdgeAdd" height="25" width="25" onclick="addNewArityEdge()" >
+                    <img  src="images/pencil.png" id="P_EdgeEdit" height="25" width="25" onclick="PeditEdge()" >
+                    <img  src="images/remove.png" id="P_EdgeDelete" height="25" width="25" onclick="P_removeDpfConnection()" >
+                    <img  src="images/iSync.png" id="P_EdgeRefresh" height="25" width="25" onclick="refreshEdgeFields()" >
+                </td>
+                </tr>
+            </table>
+            <br>
+
+            <table>
+                <tr>
+                    <td>Selected Element:</td>
+                    <td><textarea id="P_selectedElementName" readonly style="color:#444444;"  rows="1" cols="17"></textarea></td>
+                </tr>
+                <tr><td></td><td>
+                    <img  src="images/connect_no.png" id="P_predAdd" height="25" width="25" onclick="connectWithElement()" >
+                    <img  src="images/remove.png" id="P_predDel" height="25" width="25" onclick="P_removePredicate()" >
+                </td></tr>
+            </table>
+
+            <div class="error-box-p" style="color: #FF3F21;" >
+                <span id="error"></span>
+            </div>
+
+            <b>Predicates:</b>
+            <div class="note-box">
+                <div class="white">
+                    <span id="predChk"></span>
+                </div>
+            </div>
+        </div>
+        <h3><span class="arrow-r"></span>Completion Rules</h3>
+        <div class="settingsPane"  style="background-color: lightgray">
+            <p>
+                <input type="checkbox" id="C_nodeTyping" checked="checked"  onClick="displayNodeTypingOfRules()">Display typing of Nodes<br>
+                <input type="checkbox" id="C_edgeTyping" checked="checked" onClick="displayEdgeTypingOfRules()">Display typing of Edges<br><br>
+
+                <b> Build New Rule:
+                    <img  src="images/application.png" height="30" width="30" onclick="buildNewRule()" > </b><br>
+
+            <table>
+                <tr><td>Rule Id:</td><td><textarea id="C_RuleId" readonly style="color:#444444;" rows="1" cols="20"></textarea></td></tr>
+                <tr><td>Layer number:</td><td><textarea id="C_RuleLayer" style="color:#444444;" rows="1" cols="20" onblur="updateLayerNumber()"></textarea></td></tr>
+                <tr>
+                    <td>Node Type:</td><td><textarea id="C_typeName" readonly style="color:#444444;" rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Node Name:</td><td><textarea id="C_nodeName" style="color:#444444;"  rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td><td>
+                    <img  src="images/enter2.png" id="C_Add" height="25" width="25" onclick="addNewNodeIntoCompletionRule()" >
+                    <img  src="images/pencil.png" id="C_Edit" height="25" width="25" onclick="" >
+                    <img  src="images/remove.png" id="C_Delete" height="25" width="25" onclick="C_removeDpfNode()" >
+                    <img  src="images/iSync.png" id="C_Refresh" height="25" width="25" onclick="" >
+                </td>
+                </tr>
+            </table>
+
+            <p>
+            <table>
+                <tr>
+                    <td>Edge Type:</td><td><textarea id="C_EdgeTypeName" readonly style="color:#444444;" rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Source Node:</td><td><textarea id="C_srcNode" readonly style="color:#444444;"  rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Target Node:</td><td><textarea id="C_trgNode" readonly style="color:#444444;"  rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Edge Name:</td><td><textarea id="C_edgeName"  rows="1" style="color:#444444;"  cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td><td>
+                    <img  src="images/enter2.png" id="C_EdgeAdd" height="25" width="25" onclick="addNewEdgeIntoCompletionRule()" >
+                    <img  src="images/pencil.png" id="C_EdgeEdit" height="25" width="25" onclick="" >
+                    <img  src="images/remove.png" id="C_EdgeDelete" height="25" width="25" onclick="C_removeDpfConnection()" >
+                    <img  src="images/iSync.png" id="C_EdgeRefresh" height="25" width="25" onclick="" >
+                </td>
+                </tr>
+            </table>
+            <br>
+
+            <table>
+                <tr><td>Assign Tag: </td><td>
+                    <img  src="images/add1.png" id="C_AddElement" height="30" width="30" onclick="assignAddTag()" >
+                    <img  src="images/nac1.png" id="C_Nac" height="30" width="30" onclick="assignNAC()" >
+                    <img  src="images/delete.png" id="C_DelElement" height="30" width="30" onclick="assignDelTag()" >
+                </td></tr>
+            </table>
+
+            <div class="error-box-p" style="color: #FF3F21;" >
+                <span id="C_error"></span>
+            </div>
+
+            <p><b>Rules linked to the current predicate:</b><br>
+            <div class="note-box">
+                <div class="white">
+                    <span id="ruleChk"></span>
+                </div>
+            </div>
+
+            <p><b>Layering of rules:</b><br>
+            <div class="note-box">
+                <div style="height: 170px;" class="white">
+                    <span id="ruleLayer"></span>
+                </div>
+            </div>
+
+        </div>
+        <h3><span class="arrow-r"></span>Production Rules</h3>
+        <div class="settingsPane"  style="background-color: lightgray">
+            <p>
+                <input type="checkbox" id="PR_nodeTyping" checked="checked"  onClick="displayNodeTypingOfRules()">Display typing of Nodes<br>
+                <input type="checkbox" id="PR_edgeTyping" checked="checked" onClick="displayEdgeTypingOfRules()">Display typing of Edges<br><br>
+
+                <b> Build New Rule:
+                    <img  src="images/application.png" height="30" width="30" onclick="buildNewRule_PR()" > </b><br>
+
+            <table>
+                <tr><td>Rule Id:</td><td><textarea id="PR_RuleId" readonly style="color:#444444;" rows="1" cols="20"></textarea></td></tr>
+                <tr><td>Layer number:</td><td><textarea id="PR_RuleLayer" style="color:#444444;" rows="1" cols="20" onblur="updateLayerNumber()"></textarea></td></tr>
+                <tr>
+                    <td>Node Type:</td><td><textarea id="PR_typeName" readonly style="color:#444444;" rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Node Name:</td><td><textarea id="PR_nodeName" style="color:#444444;"  rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td><td>
+                    <img  src="images/enter2.png" id="PR_Add" height="25" width="25" onclick="addNewNodeIntoProductionRule()" >
+                    <img  src="images/pencil.png" id="PR_Edit" height="25" width="25" onclick="" >
+                    <img  src="images/remove.png" id="PR_Delete" height="25" width="25" onclick="PR_removeDpfNode()" >
+                    <img  src="images/iSync.png" id="PR_Refresh" height="25" width="25" onclick="" >
+                </td>
+                </tr>
+            </table>
+
+            <p>
+            <table>
+                <tr>
+                    <td>Edge Type:</td><td><textarea id="PR_EdgeTypeName" readonly style="color:#444444;" rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Source Node:</td><td><textarea id="PR_srcNode" readonly style="color:#444444;"  rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Target Node:</td><td><textarea id="PR_trgNode" readonly style="color:#444444;"  rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Edge Name:</td><td><textarea id="PR_edgeName"  rows="1" style="color:#444444;"  cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td><td>
+                    <img  src="images/enter2.png" id="PR_EdgeAdd" height="25" width="25" onclick="addNewEdgeIntoProductionRule()" >
+                    <img  src="images/pencil.png" id="PR_EdgeEdit" height="25" width="25" onclick="" >
+                    <img  src="images/remove.png" id="PR_EdgeDelete" height="25" width="25" onclick="PR_removeDpfConnection()" >
+                    <img  src="images/iSync.png" id="PR_EdgeRefresh" height="25" width="25" onclick="" >
+                </td>
+                </tr>
+            </table>
+            <br>
+
+            <table>
+                <tr><td>Assign Tag: </td><td>
+                    <img  src="images/add1.png" id="PR_AddElement" height="30" width="30" onclick="PR_assignAddTag()" >
+                    <img  src="images/nac1.png" id="PR_Nac" height="30" width="30" onclick="PR_assignNAC()" >
+                    <img  src="images/delete.png" id="PR_DelElement" height="30" width="30" onclick="PR_assignDelTag()" >
+                </td></tr>
+            </table>
+
+            <div class="error-box-p" style="color: #FF3F21;" >
+                <span id="PR_error"></span>
+            </div>
+
+            <p><b>Rules linked to the current predicate:</b><br>
+            <div class="note-box">
+                <div class="white">
+                    <span id="pr_ruleChk"></span>
+                </div>
+            </div>
+
+            <p><b>Layering of rules:</b><br>
+            <div class="note-box">
+                <div style="height: 170px;" class="white">
+                    <span id="prr_ruleLayer"></span>
+                </div>
+            </div>
+            <p>
+            <b>Add annotation: </b>
+            <img  src="images/paperclip.png" height="25" width="25" onclick="createAnnotation()" >
+            <img  src="images/remove.png" height="25" width="25" onclick="PR_deleteAnnotation()" >
+
+            <div class="note-box">
+                <div class="white">
+                    <span id="annotations"></span>
+                </div>
+            </div>
+            <p>
+                <span id="annotOptions"></span>
+        </div>
+        <h3><span class="arrow-r"></span>Model</h3>
+        <div class="settingsPane"  style="background-color: lightgray">
+            <p>
+
+                <input type="checkbox" id="nodeTyping"   onClick="displayNodeTyping()">Display typing of Nodes<br>
+                <input type="checkbox" id="edgeTyping"  onClick="displayEdgeTyping()">Display typing of Edges<br>
+                <input type="checkbox" id="selectedTyping" checked="checked" >Display typing of Selected Elements
+                <br>
+                <span id="modelOptions"></span>
+
+                <br>
+                <b>Node Properties: </b><br>
+            <table>
+                <tr>
+                    <td>Node Type:</td><td><textarea id="M_typeName" readonly style="color:#444444;" rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Node Name:</td><td><textarea id="M_nodeName" style="color:#444444;"  rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Potency:</td><td><input type="checkbox" id="M_deepCpNode" ></td>
+                </tr>
+                <tr>
+                    <td></td><td>
+                    <img  src="images/enter2.png" id="M_Add" height="25" width="25" onclick="addNewDpfNode()" >
+                    <img  src="images/pencil.png" id="M_Edit" height="25" width="25" onclick="MeditNode()" >
+                    <img  src="images/remove.png" id="M_Delete" height="25" width="25" onclick="M_removeDpfNode()" >
+                    <img  src="images/iSync.png" id="M_Refresh" height="25" width="25" onclick="refreshFields()" >
+                </td>
+                </tr>
+            </table>
+
+            <p>
+                <b>Edge Properties: </b><br>
+            <table>
+                <tr>
+                    <td>Edge Type:</td><td><textarea id="M_EdgeTypeName" readonly style="color:#444444;" rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Source Node:</td><td><textarea id="M_srcNode" readonly style="color:#444444;"  rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Target Node:</td><td><textarea id="M_trgNode" readonly style="color:#444444;"  rows="1" cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Edge Name:</td><td><textarea id="M_edgeName"  rows="1" style="color:#444444;"  cols="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Potency:</td><td><input type="checkbox" id="M_deepCpEdge" ></td>
+                </tr>
+                <tr>
+                    <td></td><td>
+                    <img  src="images/enter2.png" id="M_EdgeAdd" height="25" width="25" onclick="addNewDpfConnection()" >
+                    <img  src="images/pencil.png" id="M_EdgeEdit" height="25" width="25" onclick="MeditEdge()" >
+                    <img  src="images/remove.png" id="M_EdgeDelete" height="25" width="25" onclick="M_removeDpfConnection()" >
+                    <img  src="images/iSync.png" id="M_EdgeRefresh" height="25" width="25" onclick="refreshEdgeFields()" >
+                </td>
+                </tr>
+            </table>
+            <p>
+                <b>Add constraint: </b>
+                <img  src="images/paperclip.png" height="25" width="25" onclick="createPredicateConstraint()" >
+                <img  src="images/remove.png" height="25" width="25" onclick="M_deletePredicateConstraint()" >
+
+
+            <div class="error-box-p" style="color: #FF3F21;" >
+                <span id="M_error"></span>
+            </div>
+
+            <div class="note-box">
+                <div class="white">
+                    <span id="predConst"></span>
+                </div>
+            </div>
+            <p>
+                <span id="predOptions"></span>
+
+        </div>
+        <h3><span class="arrow-r"></span>Model Navigation </h3>
+        <div class="settingsPane"  style="background-color: lightgray">
+            <p>
+                <table>
+                <tr><td>
+                <b>Select Drawing Area: </b>
+                </td>
+                <td>
+                <table>
+                <tr>
+                    <td><img class="SimpleImage" id="Q_Screen2"  src="images/tablet.png"  height="40" width="35" ></td><td><img id="Q_Screen0" src="images/tablet.png"  height="40" width="35" onclick="setDrawingArea(0)" ></td>
+                </tr>
+                <tr>
+                    <td><img class="SimpleImage" id="Q_Screen3" src="images/tablet.png"  height="40" width="35" ></td><td><img id="Q_Screen1" src="images/tablet.png"  height="40" width="35"  onclick="setDrawingArea(1)" ></td>
+                </tr>
+                </table>
+                </td>
+                </tr>
+                </table>
+
+                <b>Search Item: </b><br>
+                <table border="0">
+                <tr>
+                    <td><textarea id="Q_NodeType_src"  style="color:#444444;" rows="1" cols="9"></textarea></td>
+                    <td><textarea id="Q_EdgeType"  style="color:#444444;" rows="1" cols="8"></textarea></td>
+                    <td><textarea id="Q_NodeType_trg"  style="color:#444444;" rows="1" cols="9"></textarea></td>
+                </tr>
+                <tr>
+                    <td align="right"><img src="images/edit_paste.png"  height="25" width="25" onclick="pasteNodeValue('Q_NodeType_src', 'Q_Node_src')" ></td>
+                    <td align="right"><img src="images/edit_paste.png"  height="25" width="25" onclick="pasteEdgeValue('Q_EdgeType', 'Q_Edge')" ></td>
+                    <td align="right"><img src="images/edit_paste.png"  height="25" width="25" onclick="pasteNodeValue('Q_NodeType_trg', 'Q_Node_trg')" ></td>
+                </tr>
+                <tr>
+                    <td><textarea id="Q_Node_src"  style="color:#444444;" rows="1" cols="9"></textarea></td>
+                    <td><textarea id="Q_Edge"  style="color:#444444;" rows="1" cols="8"></textarea></td>
+                    <td><textarea id="Q_Node_trg"  style="color:#444444;" rows="1" cols="9"></textarea></td>
+                </tr>
+                </table>
+
+            <p>
+
+            <div align="right" style="margin-right: 30px">
+                <img src="images/edit_find.png"  height="24" width="24" onclick="performQuery()" >
+                <img src="images/arrow_right.png"  height="24" width="24" onclick="Q_showAllResults()" >
+                <img src="images/iSync.png"  height="24" width="24" onclick="removeQueryResult()" >
+            </div>
+
+            <div class="note-box">
+                <div style="height: 350px;" class="white">
+                    <span id="queryResult"></span>
+                </div>
+            </div>
+
+            <div align="center">
+                <table>
+                    <tr>
+                        <td><img src="images/Zoom-in.png"  height="32" width="32" onclick="zoomIntoSrcNodes()" ></td>
+                        <td><img src="images/Zoom-in.png"  height="32" width="32" onclick="zoomIntoTrgNodes()" ></td>
+                        <td><img src="images/location.png"  height="32" width="32" onclick="hideAnElement()" ></td>
+                    </tr>
+                    <tr>
+                        <td><img id="Q_ExploreSrc" src="images/inside.png"  height="32" width="32" onclick="toggleExploreSrc()" ></td>
+                        <td><img id="Q_ExploreTrg" src="images/outside.png"  height="32" width="32" onclick="toggleExploreTrg()" ></td>
+                        <td><img src="images/recycle_bin.png"  height="35" width="35" onclick="recycleDrawingPane()" ></td>
+                    </tr>
+                    <tr>
+                        <td><img src="images/Zoom-out.png"  height="32" width="32" onclick="zoomOutFromSrcNodes()" ></td>
+                        <td><img src="images/Zoom-out.png"  height="32" width="32" onclick="zoomOutFromTrgNodes()" ></td>
+                        <td><img src="images/island.png"  height="32" width="32" onclick="hideConnectedElements()" ></td>
+                    </tr>
+                </table>
+            </div>
+
+            <b>Reach Nodes: </b><img src="images/reach.png" height="25" width="25" onclick="reachNodes()"><br>
+            <table border="0">
+                <tr>
+                    <td><textarea id="Q_R_Node_src" readonly style="color:#444444;" rows="1" cols="11"></textarea><img src="images/edit_paste.png"  height="25" width="25" onclick="pasteNodeValueInReachableField1()" ></td>
+                    <td><textarea id="Q_R_Node_trg" readonly style="color:#444444;" rows="1" cols="11"></textarea><img src="images/edit_paste.png"  height="25" width="25" onclick="pasteNodeValueInReachableField2()" ></td>
+                </tr>
+            </table>
+
+
+                <!--input type="checkbox" id="Q_moveNodes"  >Move nodes in group<br-->
+
+            <div class="error-box-p" style="color: #FF3F21;" >
+                <span id="Q_error"></span>
+            </div>
+
+
+
+
+        </div>
+    </div>
+</div>
+
+<div id="paper" class="drawingPane"></div>
+
+
+<div id="editor-box">
+    <iframe id="editor-frame" src="./semanticEditor.html" class="frame">
+    </iframe>
+</div>
+
+<div id="simulator-box">
+    <iframe id="simulator-frame" src="./www2/index.html" class="simulator-frame">
+    </iframe>
+</div>
+
+
+<script type="text/javascript" src="setupScreen.js"></script>
+<script type="text/javascript" src="setupCollapsibleMenu.js"></script>
+
+
+
+
+<script>
+
+    function openFileOption()
+    {
+        document.getElementById("files").click();
+    }
+
+
+
+    (function () {
+
+        document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+         // Create drawing area
+        paper = Raphael("paper", drawingPaneWidth, drawingPaneHeight);
+
+        drawingPane.push(
+                //paper.rect(450, 0, drawingPaneWidth, 379, 3).attr({'fill': '#283838', 'stroke': '#ffffff', "fill-opacity": "0.9" }), //, "fill-opacity": "0.9"}),
+                paper.rect(450, 0, drawingPaneWidth, 379, 3).attr({'fill': '#FEFEFE', 'stroke': '#ffffff', "fill-opacity": "0.9" }), //, "fill-opacity": "0.9"}),
+                paper.rect(450, 389, drawingPaneWidth, drawingPaneHeight-389, 3).attr({'fill': '#DDDDDD', 'stroke': '#ffffff', "fill-opacity": "0.75" }), //, "fill-opacity": "0.75"}),
+                paper.rect(0, 0, 440, 379, 3).attr({'fill': '#FEFEFE', 'stroke': '#ffffff', "fill-opacity": "0.9" }), //, "fill-opacity": "0.9"}),
+                paper.rect(0, 389, 440, drawingPaneHeight-389, 3).attr({'fill': '#DDDDDD', 'stroke': '#ffffff', "fill-opacity": "0.75"})); //, "fill-opacity": "0.75"}) ); // #565256
+
+
+        document.getElementById('editor-frame').style.top=  '378px';
+        document.getElementById('editor-frame').style.width =  '438px';
+        document.getElementById('editor-frame').style.height = (drawingPaneHeight-389) + 'px';
+
+
+
+        seperator_vertical = paper.rect(0, 380, drawingPaneWidth, 7).attr(
+                {
+                    'fill': '#010101',
+                    'stroke': '#000000',
+                    'stroke-width': 5,
+                    'opacity': 0.8
+                });
+        seperator_vertical.mousemove(changeSeperatorCursor);
+        seperator_vertical.drag(dragSeperatorMove, dragSeperatorStart, dragSeperatorEnd);
+
+        seperator_horizontal = paper.rect(440, 0, 7, drawingPaneHeight).attr(
+                {
+                    'fill': '#010101',
+                    'stroke': '#000000',
+                    'stroke-width': 5,
+                    'opacity': 0.8
+                });
+        seperator_horizontal.mousemove(changeSeperatorCursor);
+        seperator_horizontal.drag(dragSeperatorMoveHorizontal, dragSeperatorStart , dragSeperatorEndHorizontal());
+
+        setOriginalCoordinates();
+        //translateModelWithLevel(0, 150, 1);
+
+
+    })();
+
+
+
+</script>
+
+
+
+<script>
+    //editor.setFontSize("14px");
+    //console.log(document.getElementById('simulator-frame').contentDocument.getElementById('iframeHandle'));
+    //addHandle(document.getElementById('simulator-frame').contentDocument.getElementById('iframeHandle'), document.getElementById('simulator-frame').contentWindow);
+    document.getElementById('editor-frame').style.left = '-3000px';
+    document.getElementById('simulator-frame').style.left = '-3000px';
+</script>
+
+
+
+
+</body>
+</html> 

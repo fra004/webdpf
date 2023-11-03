@@ -1,0 +1,127 @@
+﻿<ons-page ng-controller="PatientController">
+    <div ng-include="'top.html'"></div>
+    <div ng-include="'patientInfo.html'"></div>
+    <ons-row>
+        <div class="center-page">
+            <!--<div ng-bind-html="pasinfo"></div>-->
+            <h1 class="center-text">{{patient.pasInfo}}</h1>
+        </div>
+    </ons-row>
+    <div id="ButtonRow" style=" vertical-align: bottom; float: none; position:absolute;  width:100% ;bottom:0;">
+        <ons-row ng-show="root.state === 3 && patient.tagPrinted && !patient.testOrdered">
+            <button class="button button--large bloodbutton" ng-click="orderSamples();">
+                <ons-row>
+                    <ons-col>
+                        Kontroller og send blodprøve
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>          
+
+        <ons-row ng-show="root.state === 3 && !patient.testOrdered && !patient.tagPrinted">
+            <button class="button button--large bloodbutton" ng-click="orderTest();">
+                <ons-row>
+                    <ons-col>
+                        Bestill blodanalyse
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>              
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <ons-row>
+            <button class="button button--large bloodbutton" ng-click="orderBlood();" 
+                    ng-show="root.state === 3 && !patient.bloodOrdered">
+                <ons-row>
+                    <ons-col>
+                        Bestill blodprodukter
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <ons-row>
+            <button class="button button--large bloodbutton" ng-click="selectTransfusion();" ng-show="root.state === 7">
+                <ons-row>
+                    <ons-col>
+                        Transfusjon
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <ons-row>
+            <button class="button button--large button--light" ng-click="ons.notification.alert({ message: 'Side for å bestille traumepakke'});">
+                <ons-row>
+                    <ons-col>
+                        Bestill Traumepakke
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <ons-row>
+            <button class="button button--large button--light" ng-click="ons.notification.alert({ message: 'Side for å håndtere kriseblod'});">
+                <ons-row>
+                    <ons-col>
+                        Håndtere Kriseblod
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <div ng-include="'bottom.html'"></div>
+    </div> <!--ButtonRow End-->
+    <ons-template id="popover.html">
+        <ons-popover direction="up down" cancelable ng-controller="PatientControllerPopup">
+            <div style="text-align: center; opacity: 0.5;" ng-show="patient.waitingProducts.length >0">
+
+                <ons-list>
+                    <ons-list-header>Ventende produkter:</ons-list-header>
+                    <ons-list-item ng-repeat="produkt in patient.waitingProducts" ng-if="produkt.transDato === ''" modifier="tappable" ng-click="navi.pushPage('Transfusion.html');">
+                        {{produkt.type}} (Reservert til: {{produkt.reservertDato}})
+                    </ons-list-item>
+                </ons-list>
+            </div>
+            <div style="text-align: center; opacity: 0.5;" ng-show="missingDoc.length >0">
+                <!--TODO-->
+                <ons-list>
+                    <ons-list-header>Dokumentasjon mangler:</ons-list-header>
+                    <ons-list-item ng-repeat="mangler in missingDoc" modifier="tappable" ng-click="navi.pushPage('TransDok.html');">
+                        {{mangler.type}}, transfundert: {{mangler.transDato}}.
+                    </ons-list-item>
+                </ons-list>
+            </div>
+        </ons-popover>
+    </ons-template>
+</ons-page>

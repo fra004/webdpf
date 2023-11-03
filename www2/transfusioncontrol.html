@@ -1,0 +1,75 @@
+﻿
+<ons-page ng-controller="TransfusioncontrolController">
+    <div ng-include="'top.html'"></div>
+    <ons-row>
+        <ons-col>
+            <h3 class="center-text">{{patient[0].Fornavn}} {{patient[0].Etternavn}}</h3>
+        </ons-col>
+    </ons-row>
+    <ons-row style="background-color:#BBBBBB">
+        <ons-col>{{patient[0].kjonn}}</ons-col>
+        <ons-col class="center-text">{{patient.alder}}</ons-col>
+        <ons-col class="right-text">{{patient[0].Fnr}}</ons-col>
+    </ons-row>
+    <ons-row>
+        <ons-col>
+            Blodtyping
+            <br />
+            <strong ng-class="{'green-text' : patient.bloodInfo.validType,'red-text' : !patient.bloodInfo.validType}">{{patient.bloodInfo.type}}</strong>
+            <br />
+            <span ng-class="{'green-text' : patient.bloodInfo.validPre,'red-text' : !patient.bloodInfo.validPre}">{{patient.bloodInfo.typeTime}}</span>
+        </ons-col>
+        <ons-col>
+            Preundersøkelse
+            <br />
+            <strong ng-class="{'green-text' : patient.bloodInfo.validPre,'red-text' : !patient.bloodInfo.validPre}">{{patient.bloodInfo.pre}}</strong>
+            <br />
+            <br />
+            <span ng-show="patient.bloodInfo.comment">Melding fra blodbanken</span>
+            <br />
+            {{patient.bloodInfo.comment}}
+        </ons-col>
+    </ons-row>
+    <br />
+    <ons-row>
+        <div class="center-page">
+            <div ng-bind-html="pasinfo"></div>
+            <h1 class="center-text">{{pasinfo}}</h1>
+        </div>
+    </ons-row>
+
+    <div id="ButtonRow" style=" vertical-align: bottom; float: none; position:absolute;  width:100% ;bottom:0;">
+        <ons-row>
+            <button class="button button--large" ng-click="$scope.navi.popPage('patient.html');">
+                <ons-row>
+                    <ons-col>
+                        Bestill Blodanalyse
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <ons-row>
+            <button class="button button--large button--light" ng-click="$scope.navi.popPage('patient.html');">
+                <ons-row>
+                    <ons-col>
+                        Bestill Traumepakke
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <div ng-include="'bottom.html'"></div>
+    </div> <!--ButtonRow End-->
+
+</ons-page>

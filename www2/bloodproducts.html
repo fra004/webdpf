@@ -1,0 +1,87 @@
+﻿<ons-page ng-controller="BloodProductsController">
+    <div ng-include="'top.html'"></div>
+    <div ng-include="'patientInfo.html'"></div>
+    <div id="checkBloodOrder" tabindex="0">
+        <ons-list>
+            <ons-list-header>Bestilling</ons-list-header>
+            <ons-list-item ng-repeat="p in products.orderableProducts">
+                {{p.name}}
+                <!--<ons-switch var="{{'product'+p.id}}" modifier="list-item">1</ons-switch>-->
+                <span class="move-right">
+                    <button class="button button--quiet" ng-disabled="p.count <= 0" ng-click="decreaseOrder(p.id)">
+                        <span class="fa fa-minus-square-o fa-2x vmiddle"></span>
+                    </button>
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                        <i class="fa fa-stack-1x">{{p.count}}</i>
+                    </span>
+                    <button class="button button--quiet" ng-disabled="p.count >= 99" ng-click="increaseOrder(p.id)">
+                        <span class="fa fa-plus-square-o fa-2x vmiddle"></span>
+                    </button>
+                </span>
+            </ons-list-item>
+        </ons-list>
+        <ons-list ng-show="count > 0">
+            <ons-list-header>Rekvirenende lege</ons-list-header>
+            <ons-list-item>
+                <ons-row>
+                    <ons-col width="40px">
+                        <ons-icon icon="ion-load-c" spin="true" fixed-width="true" style="color: #000;" ng-show="root.state === 3"></ons-icon>
+                        <ons-icon icon="ion-ios-checkmark" fixed-width="true" style="color: #395c1c;" ng-show="root.state > 3"></ons-icon>
+                    </ons-col>
+                    <ons-col class="person-name" ng-show="doctorName === ''">
+                        Scann legens ansattkort
+                    </ons-col>
+                    <ons-col class="person-name" ng-hide="doctorName === ''">
+                        {{doctor.fullName}}
+                    </ons-col>
+                </ons-row>
+            </ons-list-item>
+        </ons-list>
+    </div>
+    <ons-scroller style="height: 200px" ng-show="root.state > 3">
+        <ons-list>
+            <ons-list-header>Betalende avdeling</ons-list-header>
+            <ons-list-item modifier="tappable">
+                <label class="radio-button radio-button--list-item" ng-repeat="d in products.departments">
+                    <input type="radio" name="payee" ng-model="$parent.paidBy" ng-value="d" ng-change="console.log($parent.paidBy)">
+                    <span class="radio-button__checkmark radio-button--list-item__checkmark"></span>
+                    {{d}}
+                </label>
+            </ons-list-item>
+        </ons-list>
+    </ons-scroller>
+    <div id="ButtonRow" style=" vertical-align: bottom; float: none; position:absolute;  width:100% ;bottom:0;">
+        <ons-row>
+            <button class="button button--large bloodbutton" ng-click="sendOrder()" ng-show="paidBy">
+                <ons-row>
+                    <ons-col>
+                        Send bestilling
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <ons-row>
+            <button class="button button--large bloodbutton" ng-click="cancelOrder();">
+                <ons-row>
+                    <ons-col>
+                        Avbryt bestilling
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <div ng-include="'bottom.html'"></div>
+    </div> <!--ButtonRow End-->
+</ons-page>

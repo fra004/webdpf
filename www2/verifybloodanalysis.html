@@ -1,0 +1,91 @@
+﻿<ons-page ng-controller="VerifyBloodAnalysisController">
+    <div ng-include="'top.html'"></div>
+    <div class="navigation-bar">
+        <div class="navigation-bar__center">
+            <img src="images/logo2.gif" height="20" />BlodAppen
+        </div>
+    </div>
+    <ons-row>
+        <ons-col>
+            <h3 class="center-text">{{patient.Fornavn}} {{patient.Etternavn}}</h3>
+        </ons-col>
+    </ons-row>
+    <ons-row style="background-color:#BBBBBB">
+        <ons-col>{{patient.kjonn}}</ons-col>
+        <ons-col class="center-text">{{patient.alder}}</ons-col>
+        <ons-col class="right-text">{{patient.Fnr}}</ons-col>
+    </ons-row>
+    <div id="checkSample" tabindex="0">
+        <ons-list>
+            <ons-list-header>1. Prøveglass</ons-list-header>
+            <ons-list-item>
+                <ons-row>
+                    <ons-col width="40px">
+                        <ons-icon icon="ion-load-c" spin="true" fixed-width="true" style="color: #000;" ng-show="root.state===3"></ons-icon>
+                        <ons-icon icon="ion-ios-checkmark" fixed-width="true" style="color: #395c1c;" ng-show="root.state>3"></ons-icon>
+                    </ons-col>
+                    <ons-col class="person-name" ng-show="root.state===3">
+                        Scann etikett på prøveglass
+                    </ons-col>
+                    <ons-col class="person-name" ng-show="root.state>3">
+                        {{patient.Fornavn}} {{patient.Etternavn}}
+                    </ons-col>
+                </ons-row>
+            </ons-list-item>
+        </ons-list>
+        <ons-list ng-show="root.state>3">
+            <ons-list-header>2. Pasient</ons-list-header>
+            <ons-list-item>
+                <ons-row>
+                    <ons-col width="40px">
+                        <ons-icon icon="ion-load-c" spin="true" fixed-width="true" style="color: #000;" ng-show="root.state===4"></ons-icon>
+                        <ons-icon icon="ion-ios-checkmark" fixed-width="true" style="color: #395c1c;" ng-show="root.state>4"></ons-icon>
+                    </ons-col>
+                    <ons-col class="person-name">
+                        <span ng-show="root.state===4">Scann</span>  {{patient.Fornavn}} {{patient.Etternavn}} <span ng-show="root.state===4">sitt pasientarmbånd</span>
+                    </ons-col>
+                </ons-row>
+            </ons-list-item>
+        </ons-list>
+    </div>
+    <ons-row ng-show="root.state === 5">
+        <div class="center-page">
+            <h1 class="center-text">
+                <i class="fa fa-lg fa-5x ion-ios-checkmark-outline" style="color: #395c1c;"></i>
+            </h1>
+        </div>
+    </ons-row>
+    <div id="ButtonRow" style=" vertical-align: bottom; float: none; position:absolute;  width:100% ;bottom:0;">
+        <ons-row ng-show="root.state === 5">
+            <button class="button button--large bloodbutton" ng-click="sendTestOrder()">
+                <ons-row>
+                    <ons-col>
+                        Send bestilling
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <ons-row>
+            <button class="button button--large bloodbutton" ng-click="cancelTestOrder()">
+                <ons-row>
+                    <ons-col>
+                        Avbryt bestilling
+                    </ons-col>
+                    <ons-col width="60px">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-thin  fa-stack-2x"></i>
+                            <i class="fa fa-location-arrow fa-rotate-45  fa-stack-1x"></i>
+                        </span>
+                    </ons-col>
+                </ons-row>
+            </button>
+        </ons-row>
+        <div ng-include="'bottom.html'"></div>
+    </div> <!--ButtonRow End-->
+</ons-page>
